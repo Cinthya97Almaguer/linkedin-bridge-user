@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>LinkedIn Auth Bridge</title>
+    <title>LinkedIn Auth Bridge - User</title>
     <meta http-equiv="refresh" content="1">
 </head>
 <body>
@@ -9,9 +9,20 @@
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
         const state = urlParams.get('state');
+        const error = urlParams.get('error');
+        const authType = urlParams.get('auth_type') || 'REGISTER';
+        
+        // User siempre usa rezuappuser://
+        const scheme = 'rezuappuser://';
         
         if (code) {
-            window.location.href = 'rezuappuser://callback?code=' + code + '&state=' + state;
+            window.location.href = scheme + 'callback?code=' + code + 
+                                  '&state=' + state + 
+                                  '&auth_type=' + authType;
+        } else if (error) {
+            window.location.href = scheme + 'callback?error=' + error + 
+                                  '&state=' + state + 
+                                  '&auth_type=' + authType;
         } else {
             document.write('Esperando respuesta de LinkedIn...');
         }
