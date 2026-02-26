@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>LinkedIn Auth Bridge</title>
-    <meta http-equiv="refresh" content="1">
+
 </head>
 <body>
     <script>
@@ -11,9 +11,28 @@
         const state = urlParams.get('state');
         
         if (code) {
-            window.location.href = 'rezuappuser://callback?code=' + code + '&state=' + state;
+            const parts = state.split('_');
+            const authType = parts[0]; // "REGISTER" o "LOGIN"
+            
+            let scheme = '';
+            
+            if (authType === 'REGISTER') {
+                scheme = 'rezuappuserregister';
+            } else if (authType === 'LOGIN') {
+                scheme = 'rezuappuserlogin';
+            } else {
+                scheme = 'rezuappuserregister';
+            }
+            
+            const redirectUrl = scheme + '://callback?code=' + encodeURIComponent(code) + '&state=' + encodeURIComponent(state);
+            
+            console.log('AuthType detectado:', authType);
+            console.log('Redirigiendo a:', redirectUrl);
+            
+            window.location.href = redirectUrl;
         } else {
-            document.write('Esperando respuesta de LinkedIn...');
+            document.write('<h3>Esperando respuesta de LinkedIn...</h3>');
+            document.write('<p>Por favor espera mientras se completa la autenticación.</p>');
         }
     </script>
 </body>
